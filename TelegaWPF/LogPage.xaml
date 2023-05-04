@@ -1,0 +1,24 @@
+﻿<Page x:Class="TelegaWPF.LogPage"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TelegaWPF"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="280"
+      Title="LogPage" Background="#FF6D3859">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock FontFamily="Mistral" FontSize="18" Foreground="White"
+            Grid.Row="0" Grid.Column="0"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            Text="Пользователи:" />
+        <ListBox x:Name="LogsLbx" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" FontFamily="Mistral" FontSize="16" Foreground="#DDFFFFFF" />
+    </Grid>
+</Page>

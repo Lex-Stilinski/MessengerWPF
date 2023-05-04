@@ -1,0 +1,54 @@
+﻿<Window x:Class="TelegaWPF.AdminWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TelegaWPF"
+        mc:Ignorable="d"
+        Title="AdminWindow" Height="450" Width="800" Background="#FF6D3859" Closed="Window_Closed">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="ShowLogs" Foreground="White" Background="#FF681C4C" FontFamily="Mistral" FontSize="18" 
+            Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+            Style="{StaticResource MaterialDesignFlatDarkBgButton}"
+            ToolTip="MaterialDesignFlatDarkButton"
+            Content="Посмотреть логи чата" BorderBrush="{x:Null}" Click="ShowLogs_Click"/>
+        <ListBox x:Name="MessageLbx" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Foreground="White" FontFamily="Mistral" FontSize="16"/>
+        <Button x:Name="Send" Foreground="White" Background="#FF681C4C" FontFamily="Mistral" FontSize="18" 
+            VerticalAlignment="Bottom"
+            Grid.Row="2" Grid.Column="3"
+            Style="{StaticResource MaterialDesignFlatDarkBgButton}"
+            ToolTip="MaterialDesignFlatDarkButton"
+            Height="45"
+            Content="Отправить" BorderBrush="{x:Null}" Click="Send_Click"/>
+        <TextBox x:Name="Name" FontFamily="Mistral" FontSize="18" Foreground="White" Margin="5"
+            Grid.Row="2" Grid.Column="2"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            materialDesign:HintAssist.Hint="Сообщение" CaretBrush="{x:Null}" SelectionBrush="{x:Null}"/>
+        <Button x:Name="Exit" Foreground="White" Background="#FF681C4C" FontFamily="Mistral" FontSize="18" 
+            VerticalAlignment="Bottom"
+            Grid.Row="2" Grid.Column="1"
+            Style="{StaticResource MaterialDesignFlatDarkBgButton}"
+            ToolTip="MaterialDesignFlatDarkButton"
+            Height="45"
+            Content="Выйти" BorderBrush="{x:Null}" Click="Exit_Click"/>
+        <TextBlock FontFamily="Mistral" FontSize="18" 
+            Grid.Row="0" Grid.Column="0"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            Text="Пользователи:" Foreground="White"/>
+        <ListBox x:Name="UsersLbx" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" FontFamily="Mistral" FontSize="16" Foreground="#DDFFFFFF" />
+        <Frame x:Name="Frame" Grid.RowSpan="3" NavigationUIVisibility="Hidden" />
+    </Grid>
+</Window>

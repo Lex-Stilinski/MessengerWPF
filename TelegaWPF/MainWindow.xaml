@@ -1,0 +1,48 @@
+﻿<Window x:Class="TelegaWPF.MainWindow"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TelegaWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="300" Width="400" MinHeight="300" MinWidth="400" Background="#FF6D3859">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Grid.Row="0" 
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            FontSize="22" FontFamily="Mistral"
+            Text="Добро пожаловать в сетевой чат!" Foreground="White" />
+        <TextBox x:Name="Name" Background="#FFAF769A" Foreground="White"
+            Grid.Row="1"
+            Margin="5" FontFamily="Mistral" FontSize="18"  
+            VerticalAlignment="Center"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            materialDesign:HintAssist.Hint="Введите имя пользователя" CaretBrush="{x:Null}" SelectionBrush="{x:Null}"   />
+        <Button x:Name="Create" Foreground="White" Background="#FF681C4C" FontFamily="Mistral" FontSize="18" 
+            Grid.Row="2" Margin="5" 
+            Style="{StaticResource MaterialDesignFlatDarkBgButton}"
+            ToolTip="MaterialDesignFlatDarkButton"
+            Content="Создать новый чат" BorderBrush="{x:Null}" Click="Create_Click" />
+        <Button x:Name="Connect" Foreground="White" Background="#FF681C4C"
+            Grid.Row="3" Margin="5" FontFamily="Mistral" FontSize="18" 
+            Style="{StaticResource MaterialDesignFlatDarkBgButton}"
+            ToolTip="MaterialDesignFlatDarkButton"
+            Content="Присоединиться к текущему чату" BorderBrush="{x:Null}" Click="Connect_Click"/>
+        <TextBox x:Name="IP" Background="#FFAF769A" Foreground="White"
+            Grid.Row="4"
+            Margin="5" FontFamily="Mistral" FontSize="18" 
+            VerticalAlignment="Center"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            materialDesign:HintAssist.Hint="IP адрес чата" />
+    </Grid>
+</Window>
