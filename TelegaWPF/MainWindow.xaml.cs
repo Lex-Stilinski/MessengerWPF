@@ -29,7 +29,7 @@ namespace TelegaWPF
         {
             if (Name.Text != "")
             {
-                AdminWindow.usersname = Name.Text.ToString();
+                TcpAdmin.usersname = Name.Text.ToString();
                 AdminWindow admin = new AdminWindow();
                 admin.Show();
                 this.Close();
@@ -44,8 +44,8 @@ namespace TelegaWPF
         {
             if (Name.Text != "" && IP.Text != "")
             {
-                ClientWindow.usersname = Name.Text.ToString();
-                ClientWindow.ip = IP.Text.ToString();
+                TcpClient.usersname = Name.Text.ToString();
+                TcpClient.ip = IP.Text.ToString();
                 ClientWindow client = new ClientWindow();
                 client.Show();
                 this.Close();

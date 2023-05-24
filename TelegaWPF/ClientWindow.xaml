@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TelegaWPF"
         mc:Ignorable="d"
-        Title="ClientWindow" Height="450" Width="800" Background="#FF6D3859" Closed="Window_Closed">
+        Title="ClientWindow" Height="450" Width="800" Background="#FF6D3859" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

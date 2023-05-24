@@ -21,39 +21,32 @@ namespace TelegaWPF
 {
     public partial class AdminWindow : Window
     {
-        private Socket socket;
+        
         private CancellationTokenSource isWorking;
-        private Dictionary<Socket, string> clients = new Dictionary<Socket, string>();
         private bool isPageOpen = false;
-        public static List<string> logList = new List<string>();
-        public static string usersname;
         DateTime date = DateTime.Now;
         public AdminWindow()
         {
             InitializeComponent();
+
+            TcpAdmin.Server();
             isWorking = new CancellationTokenSource();
-            IPEndPoint ipPoint = new IPEndPoint(IPAddress.Any, 8888);
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Bind(ipPoint);
-            socket.Listen(1000);
-            clients.Add(socket, $"[{usersname}]");
-            logList.Add($"[{date}] \nНовый юзер: {usersname} ");
             UpdateUsers();
-            ListenToClients();
+            ListenToClients(isWorking.Token);
         }
 
-        private async Task ListenToClients()
+        private async Task ListenToClients(CancellationToken token)
         {
-            while (!isWorking.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
-                var client = await socket.AcceptAsync();
+                var client = await TcpAdmin.socket.AcceptAsync();
                 RecieveMessage(client);
             }
         }
 
         private async Task RecieveMessage(Socket client)
         {
-            while (!isWorking.IsCancellationRequested)
+            while (true)
             {
                 byte[] bytes = new byte[1024];
                 await client.ReceiveAsync(bytes, SocketFlags.None);
@@ -64,41 +57,30 @@ namespace TelegaWPF
                 {
                     case 0:
                         message = message.Substring(0, message.LastIndexOf(']') + 1);
-                        clients.Add(client, message);
+                        TcpAdmin.clients.Add(client, message);
                         UpdateUsers();
-                        logList.Add($"[{date}] \nНовый юзер: [{message}] ");
+                        TcpAdmin.logList.Add($"[{date}] \nНовый юзер: [{message}] ");
                         string allUsers = "";
-                        foreach (var item in clients)
+                        foreach (var item in TcpAdmin.clients)
                         {
                             allUsers += $"{item.Value};";
                         }
-                        foreach (var item in clients)
+                        foreach (var item in TcpAdmin.clients)
                         {
-                            SendUsers(item.Key, allUsers);
+                            TcpAdmin.SendUsers(item.Key, allUsers);
                         }
 
                         break;
                     case 1:
                         MessageLbx.Items.Add(message);
 
-                        foreach (var item in clients)
+                        foreach (var item in TcpAdmin.clients)
                         {
-                            SendMessage(item.Key, message);
+                            TcpAdmin.SendMessage(item.Key, message);
                         }
                         break;
                 }
             }
-        }
-
-        private async Task SendMessage(Socket client, string message)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes($"1{message}");
-            await client.SendAsync(bytes, SocketFlags.None);
-        }
-        private async Task SendUsers(Socket client, string allUsers)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes($"2{allUsers}");
-            await client.SendAsync(bytes, SocketFlags.None);
         }
 
         private void ShowLogs_Click(object sender, RoutedEventArgs e)
@@ -119,44 +101,61 @@ namespace TelegaWPF
 
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            if (Name.Text != "")
+            if (Name.Text == "/disconnect")
             {
-                MessageLbx.Items.Add($"[{date}] [{usersname}]: {Name.Text}");
-
-                foreach (var item in clients)
-                {
-                    SendMessage(item.Key, $"[{date}] [{usersname}]: {Name.Text}");
-                }
-                Name.Text = "";
+                ExitAction();
             }
             else
             {
-                MessageBox.Show("Сообщение пустое!");
+                if (Name.Text != "")
+                {
+                    MessageLbx.Items.Add($"[{date}] [{TcpAdmin.usersname}]: {Name.Text}");
+
+                    foreach (var item in TcpAdmin.clients)
+                    {
+                        TcpAdmin.SendMessage(item.Key, $"[{date}] [{TcpAdmin.usersname}]: {Name.Text}");
+                    }
+                    Name.Text = "";
+                }
+                else
+                {
+                    MessageBox.Show("Сообщение пустое!");
+                }
             }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
-            isWorking.Cancel();
-            MainWindow main = new MainWindow();
-            main.Show();
-            this.Close();
+            ExitAction();
         }
         private void UpdateUsers()
         {
             UsersLbx.Items.Clear();
-            foreach (var item in clients)
+            foreach (var item in TcpAdmin.clients)
             {
                 UsersLbx.Items.Add(item.Value);
             }
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void ExitAction()
         {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
             isWorking.Cancel();
-            MainWindow main = new MainWindow();
-            main.Show();
+            TcpAdmin.socket.Close();
+            TcpAdmin.clients = new Dictionary<Socket, string>();
+            TcpAdmin.logList = new List<string>();
             this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+            isWorking.Cancel();
+            TcpAdmin.socket.Close();
+            TcpAdmin.clients = new Dictionary<Socket, string>();
+            TcpAdmin.logList = new List<string>();
         }
     }
 }

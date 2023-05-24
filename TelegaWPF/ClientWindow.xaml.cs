@@ -24,27 +24,21 @@ namespace TelegaWPF
     public partial class ClientWindow : Window
     {
         private CancellationTokenSource isWorking;
-        public static string ip;
-        DateTime date = DateTime.Now;
-        public static string usersname;
-        private Socket server;
         public ClientWindow()
         {
             InitializeComponent();
+            TcpClient.Client();
             isWorking = new CancellationTokenSource();
-            server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            server.Connect(ip, 8888);
-            SendName(usersname);
-            RecieveMessage();
+            RecieveMessage(isWorking.Token);
 
         }
 
-        private async Task RecieveMessage()
+        private async Task RecieveMessage(CancellationToken token)
         {
-            while (!isWorking.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
                 byte[] bytes = new byte[1024];
-                await server.ReceiveAsync(bytes, SocketFlags.None);
+                await TcpClient.server.ReceiveAsync(bytes, SocketFlags.None);
                 string message = Encoding.UTF8.GetString(bytes);
                 int action = Convert.ToInt32(message.Substring(0, 1));
                 message = message.Substring(1, message.Length - 1);
@@ -65,45 +59,44 @@ namespace TelegaWPF
             }
         }
 
-        private async Task SendName(string usersname)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes($"0[{usersname}]");
-            await server.SendAsync(bytes, SocketFlags.None);
-        }
-
-        private async Task SendMessage(string message)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes($"1{message}");
-            await server.SendAsync(bytes, SocketFlags.None);
-        }
-
         private void Send_Click(object sender, RoutedEventArgs e)
         {
-            if (Message.Text != "")
+            if (Message.Text == "/disconnect")
             {
-                SendMessage($"[{date}] [{usersname}]: {Message.Text}");
-                Message.Text = "";
+                ExitAction();
             }
             else
             {
-                MessageBox.Show("Сообщение пустое!");
+                if (Message.Text != "")
+                {
+                    TcpClient.SendMessage($"[{TcpClient.date}] [{TcpClient.usersname}]: {Message.Text}");
+                    Message.Text = "";
+                }
+                else
+                {
+                    MessageBox.Show("Сообщение пустое!");
+                }
             }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
+            ExitAction();
+        }
+        private void ExitAction()
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
             isWorking.Cancel();
-            MainWindow main = new MainWindow();
-            main.Show();
+            TcpClient.server.Close();
             this.Close();
         }
-
-        private void Window_Closed(object sender, EventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
             isWorking.Cancel();
-            MainWindow main = new MainWindow();
-            main.Show();
-            this.Close();
+            TcpClient.server.Close();
         }
     }
 }

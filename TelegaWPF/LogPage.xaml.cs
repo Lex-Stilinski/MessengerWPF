@@ -20,7 +20,7 @@ namespace TelegaWPF
         public LogPage()
         {
             InitializeComponent();
-            foreach (var item in AdminWindow.logList)
+            foreach (var item in TcpAdmin.logList)
             {
                 LogsLbx.Items.Add(item);
             }
